@@ -8,11 +8,11 @@ services:
   - docker
 
 # test  
-before_install:
-  - docker build -t tylerkim/multi_container -f ./frontend/Dockerfile.dev ./frontend
+# before_install:
+#   - docker build -t tylerkim/multi_container -f ./frontend/Dockerfile.dev ./frontend
   
-script:
-  - docker run -e CI=true tylerkim/multi_container npm run test # -- --coverage
+# script:
+#   - docker run -e CI=true tylerkim/multi_container npm run test # -- --coverage
 
 # product build & push dockerhub
 after_success:
