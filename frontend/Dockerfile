@@ -4,7 +4,8 @@ WORKDIR /app
 COPY ./package.json ./
 RUN npm install
 COPY . .
-CMD npm run build
+RUN npm run build
+# CMD가 아닌 RUN
 
 # cp buildfile&conf nginx
 FROM nginx
