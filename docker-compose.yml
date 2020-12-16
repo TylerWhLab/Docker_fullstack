@@ -28,6 +28,12 @@ services: # services 내 이미지들로 생성된 컨테이너들은 서로 통
     volumes:
       - /app/node_modules
       - ./backend:/app
+    environment: 
+      MYSQL_HOST: mysql
+      MYSQL_USER: root 
+      MYSQL_ROOT_PASSWORD: toortoor
+      MYSQL_DATABASE: myapp
+      MYSQL_PORT: 3306   
 
   # AWS RDS 활용하므로 주석
   # mysql:

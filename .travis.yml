@@ -21,7 +21,21 @@ after_success:
   - docker build -t tylerkim/docker_nginx ./nginx
 
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+  # docker pw에 특수문자 들어가면 travis-ci.com에서 환경변수 등록 시 이스케이프 처리 필요
 
   - docker push tylerkim/docker_frontend
   - docker push tylerkim/docker_backend
   - docker push tylerkim/docker_nginx
+
+deploy:
+  provider: elasticbeanstalk # 외부 서비스 : AWS, Azure, Google cloud
+  region: "ap-northeast-2"
+  app: "docker_fullstack"
+  env: "DockerFullstack-env"
+  bucket_name: elasticbeanstalk-ap-northeast-2-396924750211 # S3 (storage) 에 넣은 다음 EB에서 활용하기 때문에 S3 이름 명시
+  bucket_path: "docker_fullstack" # app name과 동일
+  on:
+    branch: main # 배포할 git branch
+  
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
