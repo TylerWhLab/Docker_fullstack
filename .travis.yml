@@ -1,0 +1,27 @@
+language: generic
+        
+dist: xenial
+
+os: linux
+
+services:
+  - docker
+
+# test  
+before_install:
+  - docker build -t tylerkim/multi_container -f ./frontend/Dockerfile.dev ./frontend
+  
+script:
+  - docker run -e CI=true tylerkim/multi_container npm run test # -- --coverage
+
+# product build & push dockerhub
+after_success:
+  - docker build -t tylerkim/docker_frontend ./frontend
+  - docker build -t tylerkim/docker_backend ./backend
+  - docker build -t tylerkim/docker_nginx ./nginx
+
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+
+  - docker push tylerkim/docker_frontend
+  - docker push tylerkim/docker_backend
+  - docker push tylerkim/docker_nginx

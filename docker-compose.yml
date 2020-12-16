@@ -1,0 +1,45 @@
+version: "3"
+
+services: # services 내 이미지들로 생성된 컨테이너들은 서로 통신이 가능하다.
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend # 이미지에 넣을 파일,폴더 경로
+    volumes:
+      - /app/node_modules # 로컬에 해당 파일이 있는지 찾이 않음(로컬엔 삭제했기 때문)
+      - ./frontend:/app
+    environment:
+     - CHOKIDAR_USEPOLLING=true # 윈도우 터미널에서 리액트 핫로딩 활성화(소스 수정 시 실시간 반영) => WSL 사용하자...
+    stdin_open: true # 리액트 에러 핸들링
+
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3000:80"
+
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./backend
+    container_name: app_backend
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+
+  # AWS RDS 활용하므로 주석
+  # mysql:
+  #   build: ./mysql
+  #   restart: unless-stopped
+  #   container_name: app_mysql
+  #   ports:
+  #     - "3306:3306"
+  #   volumes: # delete container -> db data persistant (save in docker area - host filesystem)
+  #     - ./mysql/mysql_data:/var/lib/mysql 
+  #     - ./mysql/sqls/:/docker-entrypoint-initdb.d/
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: pw
+  #     MYSQL_DATABASE: myapp
+
