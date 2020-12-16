@@ -7,13 +7,13 @@ const app = express();
 
 app.use(bodyParser.json());
 
-// db.pool.query(`CREATE TABLE LISTS (
-//     ID INTEGER AUTO_INCREMENT,
-//     VALUE TEXT,
-//     PRIMARY KEY (ID)
-// )`, (err, results, fileds) => {
-//     console.log("results", results);
-// })
+db.pool.query(`CREATE TABLE LISTS (
+    ID INTEGER AUTO_INCREMENT,
+    VALUE TEXT,
+    PRIMARY KEY (ID)
+)`, (err, results, fileds) => {
+    console.log("results", results);
+})
 
 
 app.get("/api/values", (req, res) => {
@@ -35,14 +35,15 @@ app.post("/api/value", (req, res, next) => {
     const sql = `INSERT INTO LISTS (VALUE) VALUES ('${req.body.value}')`;
 
     db.pool.query(sql, (err, results, fileds) => {
-        if(err)
+        if(err) 
             return res.status(500).send(err)
-        else
+        else {
             return res.json({ 
                 success: true, 
                 value: req.body.value,
                 sql: sql
             })
+        }
     })
 
 })
